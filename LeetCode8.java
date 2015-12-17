@@ -20,11 +20,16 @@ If the first sequence of non-whitespace characters in str is not a valid integra
 
 If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.
 */
-
 public class Solution {
     public int myAtoi(String s) {
         
-        if(s == null || s.length() == 0){
+       //return helper1(s);
+       
+       return helper2(s);
+     }
+     
+     public int helper1(String s){
+          if(s == null || s.length() == 0){
             return 0;
         }
         
@@ -76,5 +81,63 @@ public class Solution {
               return -(int)ans;
           }
           return (int)ans;
+     }
+     
+     public int helper2(String s){
+          if(s == null || s.length() == 0){
+            return 0;
+        }
+        
+        int i = 0;
+        while(i < s.length() && s.charAt(i) == ' '){
+            i++;
+        }
+        
+        if(i == s.length()) return 0;
+        boolean isNegative = false;
+        if(s.charAt(i)=='-') {
+            isNegative = true;
+            i++;
+        }
+        if( i < s.length() && s.charAt(i)=='+')
+        {
+            if(isNegative)
+            {
+                return 0;
+            }
+            i++;
+            if( i < s.length() && s.charAt(i) == '-')
+            {
+                return 0;
+            }
+        }
+        while(i < s.length() && s.charAt(i) == '0')
+        {
+            i++;
+        }
+        
+        int ans = 0;
+        while( i < s.length())
+        {
+            char ch = s.charAt(i);
+            if(Character.isDigit(ch))
+            {
+                // overflow detection
+                if(ans > Integer.MAX_VALUE/10 || (ans == Integer.MAX_VALUE/10 && Integer.MAX_VALUE % 10 < s.charAt(i) - '0'))
+                {
+                    return isNegative?Integer.MIN_VALUE : Integer.MAX_VALUE;
+                }
+                ans = ans * 10 + s.charAt(i++) - '0';
+            }else
+            {
+               break;
+            }
+                
+        }
+      
+          if(isNegative){
+              return -ans;
+          }
+          return ans;
      }
 }
