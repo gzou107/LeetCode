@@ -1,0 +1,135 @@
+/*
+148. Sort List My Submissions Question
+Sort a linked list in O(n log n) time using constant space complexity.
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public ListNode sortList(ListNode head) {
+        
+        //return help0(head);
+        return help1(head);
+    }
+    
+    // merge sort
+    private ListNode findMedian(ListNode head)
+    {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+    
+    private ListNode merge(ListNode l, ListNode r)
+    {
+        if( l == null) return r;
+        if( r == null) return l;
+        ListNode dummy = new ListNode(0);
+        ListNode tail = dummy;
+        
+        while(l != null && r != null)
+        {
+            if(l.val < r.val)
+            {
+                tail.next = l;
+                l = l.next;
+            }else{
+                tail.next = r;
+                r = r.next;
+            }
+            tail = tail.next;
+        }
+        if(l != null){
+            tail.next = l;
+        }else if(r != null){
+            tail.next = r;
+        }
+        
+        return dummy.next;
+    }
+    
+    private ListNode help0(ListNode head)
+    {
+        if(head == null || head.next == null) return head;
+        
+        ListNode m = findMedian(head);
+        //we must first do right, and then do left as we want to cut the tail
+        ListNode right = help0(m.next);
+        m.next = null; // !!! set the tail
+        
+        ListNode left = help0(head); // now take care of the left side
+        return merge(left, right);
+    }
+    // 3 ways quick sort
+    private ListNode findTail(ListNode head)
+    {
+        if(head == null || head.next == null) return head;
+        
+        while(head.next != null){
+            head = head.next;
+        }
+        return head;
+    }
+    
+    private ListNode concat(ListNode left, ListNode mid, ListNode right)
+    {
+        ListNode dummy = new ListNode(0);
+        ListNode tail = dummy;
+        tail.next = left; 
+        tail = findTail(tail);
+        tail.next = mid;
+        tail = findTail(tail);
+        tail.next = right;
+        
+        return dummy.next;
+    }
+    
+    private ListNode help1(ListNode head)
+    {
+        if(head == null || head.next == null) return head;
+        
+        ListNode lHead = new ListNode(0);
+        ListNode lTail = lHead;
+        ListNode mHead = new ListNode(0);
+        ListNode mTail = mHead;
+        ListNode rHead = new ListNode(0);
+        ListNode rTail = rHead;
+        
+        ListNode m = findMedian(head);
+        while(head != null)
+        {
+            if(head.val < m.val){
+                lTail.next = head;
+                lTail = lTail.next;
+            }else if(head.val > m.val){
+                rTail.next = head;
+                rTail = rTail.next;
+            }else{
+                mTail.next = head;
+                mTail = mTail.next;
+            }
+            head = head.next;
+        }
+        
+        lTail.next = null;
+        mTail.next = null;
+        rTail.next = null;
+        
+        ListNode l0 = help1(lHead.next);
+        //ListNode m0 = help1(mHead.next);
+        ListNode r0 = help1(rHead.next);
+        
+        return concat(l0, mHead.next, r0);
+    }
+    
+}
