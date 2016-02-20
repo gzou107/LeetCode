@@ -57,3 +57,82 @@ public class Solution {
         }
     }
 }
+/*
+*  2016/02/19 AIrbnb phone interview question !!!
+*/
+public class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        return help0(candidates, target);
+        //return help1(candidates, target);
+    }
+    
+    private List<List<Integer>> help0(int[]candidate, int target)
+    {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        if(candidate == null || candidate.length == 0) return res;
+        
+        Arrays.sort(candidate);
+        dfs(candidate, 0, target, 0, new ArrayList<Integer>(), res);
+        return res;
+    }
+    
+    private void dfs(int[] candidate, int pos, int target, int value, List<Integer> temp, List<List<Integer>> res)
+    {
+        if(target == value)
+        {
+            List<Integer> oneSol = new ArrayList<>(temp);
+            res.add(oneSol);
+            return;
+        }
+        
+        if(value > target){
+            return;
+        }
+        
+        for(int i = pos; i < candidate.length; i++)
+        {
+            value += candidate[i];
+            temp.add(candidate[i]);
+            
+            dfs(candidate, i, target, value, temp, res);
+            
+            temp.remove(temp.size()-1);
+            value -= candidate[i];
+        }
+    }
+    
+    private List<List<Integer>> help1(int[]candidate, int target)
+    {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        if(candidate == null || candidate.length == 0) return res;
+        
+        Arrays.sort(candidate);
+        dfs1(candidate, 0, target, new ArrayList<Integer>(), res);
+        return res;
+    }
+    
+    private void dfs1(int[] candidate, int pos, int target,  List<Integer> temp, List<List<Integer>> res)
+    {
+        if(target == 0)
+        {
+            List<Integer> oneSol = new ArrayList<>(temp);
+            res.add(oneSol);
+            return;
+        }
+        
+        if(target < 0 || pos >= candidate.length || candidate[pos] > target){
+            return;
+        }
+        
+        for(int i = pos; i < candidate.length; i++)
+        {
+            target -= candidate[i];
+            temp.add(candidate[i]);
+            
+            dfs1(candidate, i, target, temp, res);
+            
+            temp.remove(temp.size()-1);
+            target += candidate[i];
+        }
+    }
+}
