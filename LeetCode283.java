@@ -23,4 +23,22 @@ public class Solution {
         // remember to set rest to 0
         Arrays.fill(nums, len, nums.length, 0);
     }
+	
+	   
+    private void help(int[]nums)
+    {
+        if(nums == null || nums.length <= 1) return;
+        
+        int offset = 0;
+        for(int i = 0; i < nums.length; i++)
+        {
+            if(nums[i] != 0){
+                nums[offset++] = nums[i];
+                
+                if(offset-1 != i){
+                    nums[i] = 0;
+                }
+            }
+        }
+    }
 }
